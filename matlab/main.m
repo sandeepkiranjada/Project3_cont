@@ -67,7 +67,7 @@ U_tilda = B*K*R;
 
 %% simulation
 
-X0  = [0 0 3 0 6 0 9 0 12 40]';
+X0  = [0 0 0 0 0 0 0 0 0 50]';
 
 
 % Xdot = @(t,X) (A_tilda * X + U_tilda);
@@ -75,16 +75,16 @@ X0  = [0 0 3 0 6 0 9 0 12 40]';
 [t,X] = ode45(@(t,X) Xdot(t,X,A_tilda,U_tilda),[0 100],X0);
 
 %% Plots
-% figure; plot(t,X(:,1),t,X(:,3),t,X(:,5));
+figure; plot(t,X(:,1),t,X(:,3),t,X(:,5),t,X(:,7),t,X(:,9));
 % 
-% figure; plot(t,X(:,2),t,X(:,4),t,X(:,6));
+figure; plot(t,X(:,2),t,X(:,4),t,X(:,6),t,X(:,8),t,X(:,10));
 
-figure; plot(t,X(:,3)-X(:,1),t,X(:,5)-X(:,3),t,X(:,7)-X(:,5),t,X(:,9)-X(:,7));
+% figure; plot(t,X(:,3)-X(:,1),t,X(:,5)-X(:,3),t,X(:,7)-X(:,5),t,X(:,9)-X(:,7));
 
-figure; plot(t,X(:,4)-X(:,2),t,X(:,6)-X(:,4),t,X(:,8)-X(:,6),t,X(:,10)-X(:,8));
+% figure; plot(t,X(:,4)-X(:,2),t,X(:,6)-X(:,4),t,X(:,8)-X(:,6),t,X(:,10)-X(:,8));
 
 
 U = -K*C*X'+K*R;
 
-figure; plot(t,U(1,:),t,U(2,:),t,U(3,:),t,U(4,:))
+figure; plot(t,U(1,:),t,U(2,:),t,U(3,:),t,U(4,:),t,U(5,:))
 
