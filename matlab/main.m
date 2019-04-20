@@ -8,7 +8,7 @@ kpi = 1;
 kdi = 7;
 d = 10;
 
-N = 5; % Platoon size with Leader
+N = 3; % Platoon size with Leader
 
 R = or(mod((3:N*5-2),5)==1,mod((3:N*5-2),5)==3)' .* d; % Reference Signal
 R(end) = 0;
@@ -67,7 +67,9 @@ U_tilda = B*K*R;
 
 %% simulation
 
-X0  = [0 0 0 0 0 0 0 0 0 50]';
+% X0  = [0 0 0 0 0 0 0 0 0 50]';
+X0  = zeros(N*2,1);
+X0(end) = 50;
 
 
 % Xdot = @(t,X) (A_tilda * X + U_tilda);
@@ -75,16 +77,18 @@ X0  = [0 0 0 0 0 0 0 0 0 50]';
 [t,X] = ode45(@(t,X) Xdot(t,X,A_tilda,U_tilda),[0 100],X0);
 
 %% Plots
-figure; plot(t,X(:,1),t,X(:,3),t,X(:,5),t,X(:,7),t,X(:,9));
-% 
-figure; plot(t,X(:,2),t,X(:,4),t,X(:,6),t,X(:,8),t,X(:,10));
-
-% figure; plot(t,X(:,3)-X(:,1),t,X(:,5)-X(:,3),t,X(:,7)-X(:,5),t,X(:,9)-X(:,7));
-
-% figure; plot(t,X(:,4)-X(:,2),t,X(:,6)-X(:,4),t,X(:,8)-X(:,6),t,X(:,10)-X(:,8));
-
-
 U = -K*C*X'+K*R;
+for n=1:N
+figure(1); plot(t,X(:,n*2-1)); hold on
+end
 
-figure; plot(t,U(1,:),t,U(2,:),t,U(3,:),t,U(4,:),t,U(5,:))
+for n=1:N
+figure(2); plot(t,X(:,n*2)); hold on
+end
+
+for n=1:N
+figure(3); plot(t,U(n,:)); hold on
+end
+
+% figure; plot(t,U(1,:),t,U(2,:),t,U(3,:),t,U(4,:),t,U(5,:))
 
