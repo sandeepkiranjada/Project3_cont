@@ -5,10 +5,10 @@ close all; clc; clear;
 %% Functions
 
 kpi = 1;
-kdi = 5;
+kdi = 4;
 d = 10;
 
-N = 3; % Platoon size with Leader
+N = 5; % Platoon size with Leader
 
 R = or(mod((3:N*5-2),5)==1,mod((3:N*5-2),5)==3)' .* d; % Reference Signal
 R(end) = 0;
@@ -55,35 +55,50 @@ for n=0:N-3
     K(n+2,n*5+4:n*5+8) = Ki;
 end
 
+% simulate instability
+K_a = K;
+% %kps
+% K_a(4,14) = -3;
+% K_a(4,16) = 3;
+%kds
+K_a(4,15) = -0.5;
+K_a(4,17) = 0.5;
+
+% attacker modifying C
+C(7,:) = -0.7*C(7,:);
+C(15,:) = -0.7*C(15,:);
+
 B(end,end) = 0;
 
 A_tilda = A-B*K*C;
+%A_tilda = A-B*K_a*C;
 % U_tilda = B*K*R+G*W(1);
 
 U_tilda = B*K*R;
+%U_tilda = B*K_a*R;
 
-
-
+% Eigen_A_tilda = eig(A_tilda);
 
 %% simulation
 
-% X0  = [0 0 0 0 0 0 0 0 0 50]';
-X0  = zeros(N*2,1);
-X0(end) = 22.352; % 50 mph in m/s
+X0  = [0 22 2 22 4 22 6 22 8 22]';
+% X0  = zeros(N*2,1);
+% X0(end) = 22.352; % 50 mph in m/s
 
 
 % Xdot = @(t,X) (A_tilda * X + U_tilda);
 
-[t,X] = ode45(@(t,X) Xdot(t,X,A_tilda,U_tilda),[0 30],X0);
+[t,X] = ode45(@(t,X) Xdot(t,X,A_tilda,U_tilda),[0 5],X0);
 
 %% Plots
 U = -K*C*X'+K*R;
+%U = -K_a*C*X'+K_a*R;
 
 maxA = 13.4112; % 30 mph/s in m/s^2
 minA = -13.4112; % -30 mph/s m/s^2
 
-U(maxA<U)=maxA;
-U(-maxA>U)=maxA;
+% U(maxA<U)=maxA;
+% U(-maxA>U)=maxA;
 
 for n=1:N
 figure(1); plot(t,X(:,n*2-1)); hold on;
@@ -119,7 +134,7 @@ xlabel('Time (s)');
 ylabel('dV (mph)');
 % legend
 
-for n=1:N
+for n=1:N-1
 figure(5); plot(t,U(n,:)./9.806); hold on
 end
 
