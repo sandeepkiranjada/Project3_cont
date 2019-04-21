@@ -26,9 +26,9 @@ Xd_min  = ((mod(1:N,2)==0)*minV + (mod(1:N,2)==1)*minA)';
 
 Xd = A * X + U + G*W(t);
 
-Xd(Xd_max<Xd)=Xd_max(Xd_max<Xd);
+% Xd(Xd_max<Xd)=Xd_max(Xd_max<Xd);
 
-Xd(Xd_min>Xd)=Xd_min(Xd_min>Xd);
+% Xd(Xd_min>Xd)=Xd_min(Xd_min>Xd);
 
 end
 

@@ -5,7 +5,7 @@ close all; clc; clear;
 %% Functions
 
 kpi = 1;
-kdi = 5;
+kdi = 4;
 d = 10;
 
 N = 3; % Platoon size with Leader
@@ -67,14 +67,14 @@ U_tilda = B*K*R;
 
 %% simulation
 
-% X0  = [0 0 0 0 0 0 0 0 0 50]';
-X0  = zeros(N*2,1);
-X0(end) = 22.352; % 50 mph in m/s
+X0  = [0 0 10 0 20 30]';
+% X0  = zeros(N*2,1);
+% X0(end) = 30; % 50 mph in m/s
 
 
 % Xdot = @(t,X) (A_tilda * X + U_tilda);
 
-[t,X] = ode45(@(t,X) Xdot(t,X,A_tilda,U_tilda),[0 30],X0);
+[t,X] = ode45(@(t,X) Xdot(t,X,A_tilda,U_tilda),[0 40],X0);
 
 %% Plots
 U = -K*C*X'+K*R;
@@ -82,51 +82,53 @@ U = -K*C*X'+K*R;
 maxA = 13.4112; % 30 mph/s in m/s^2
 minA = -13.4112; % -30 mph/s m/s^2
 
-U(maxA<U)=maxA;
-U(-maxA>U)=maxA;
-
+% U(maxA<U)=maxA;
+% U(-maxA>U)=maxA;
+load RES_GER
 for n=1:N
 figure(1); plot(t,X(:,n*2-1)); hold on;
 end
 title('Positions');
 xlabel('Time (s)');
 ylabel('Positions (m)');
-% legend
+legend('show')
+
 
 for n=1:N
 figure(2); plot(t,X(:,n*2).*2.23694); hold on
 end
-
 title('Velocities');
 xlabel('Time (s)');
 ylabel('Velocities (mph)');
-% legend
+legend('show')
+
 
 for n=1:N-1
-figure(3); plot(t,X(:,(n+1)*2-1)-X(:,(n)*2-1)); hold on;
+figure(3); plot(t,X(:,(n+1)*2-1)-X(:,(n)*2-1)-10); hold on;
 end
+plot(t,p(:,2:3) - p(:,1:2));
 title('Seperation');
 xlabel('Time (s)');
 ylabel('dP (m)');
-% legend
+legend('show')
+
 
 for n=1:N-1
-figure(4); plot(t,X(:,(n+1)*2).*2.23694-X(:,n*2).*2.23694); hold on
+figure(4); plot(t,X(:,(n+1)*2)-X(:,n*2)); hold on
 end
-
+plot(t,s(:,2:3) - s(:,1:2));
 title('Error in Velocities');
 xlabel('Time (s)');
 ylabel('dV (mph)');
-% legend
+legend('show')
 
-for n=1:N
-figure(5); plot(t,U(n,:)./9.806); hold on
+for n=1:N-1
+figure(5); plot(t,U(n,:)); hold on
 end
+plot(t,a);
 
 title('Accelerations');
 xlabel('Time (s)');
 ylabel('Accelerations (g)');
-% legend
-
-% figure; plot(t,U(1,:),t,U(2,:),t,U(3,:),t,U(4,:),t,U(5,:))
+legend('show')
 
