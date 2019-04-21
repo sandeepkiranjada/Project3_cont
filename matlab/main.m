@@ -4,8 +4,8 @@ close all; clc; clear;
 
 %% Functions
 
-kpi = 5;
-kdi = 20;
+kpi = 1;
+kdi = 3;
 d = 10;
 
 N = 5; % Platoon size with Leader
@@ -61,8 +61,8 @@ K_a = K;
 % K_a(4,14) = -3;
 % K_a(4,16) = 3;
 %kds
-K_a(4,15) = -0.5;
-K_a(4,17) = 0.5;
+K_a(4,15) = -1.2;
+K_a(4,17) = 1.2;
 
 % attacker modifying C
 % C(7,:) = -0.7*C(7,:);
@@ -95,18 +95,30 @@ tf = 20;
 dt = 0.01;
 
 clear X t
-t=0:dt:20;
+t=0:dt:tf;
+
+maxA = 13.4112; % 30 mph/s in m/s^2
+minA = -13.4112; % -30 mph/s m/s^2
 
 X(1,:) = X0';
 
 for n=2:length(t)
     E(n-1,:) = (R - C*X(n-1,:)')';
-    U(n-1,:) = (K*E(n-1,:)');
+    
+%     U(n-1,:) = (K*E(n-1,:)');
+    U(n-1,:) = (K_a*E(n-1,:)');
+
+    U(maxA<U)=maxA;
+    U(minA>U)=minA;   
+
     Xd = A*X(n-1,:)' + B*U(n-1,:)';
     X(n,:) = X(n-1,:) + dt*Xd';
 end
+
+
+
 %% Plots
-U = -K*C*X'+K*R;
+% U = -K*C*X'+K*R;
 %U = -K_a*C*X'+K_a*R;
 
 maxA = 13.4112; % 30 mph/s in m/s^2
@@ -151,7 +163,7 @@ ylabel('dV (mph)');
 legend('show')
 
 for n=1:N-1
-figure(5); plot(t,U(n,:)./9.806); hold on
+figure(5); plot(t(1:end-1),U(:,n)./9.806); hold on
 end
 title('Accelerations');
 xlabel('Time (s)');
