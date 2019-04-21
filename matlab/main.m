@@ -4,8 +4,8 @@ close all; clc; clear;
 
 %% Functions
 
-kpi = 1;
-kdi = 4;
+kpi = 5;
+kdi = 20;
 d = 10;
 
 N = 5; % Platoon size with Leader
@@ -65,8 +65,8 @@ K_a(4,15) = -0.5;
 K_a(4,17) = 0.5;
 
 % attacker modifying C
-C(7,:) = -0.7*C(7,:);
-C(15,:) = -0.7*C(15,:);
+% C(7,:) = -0.7*C(7,:);
+% C(15,:) = -0.7*C(15,:);
 
 B(end,end) = 0;
 
@@ -88,8 +88,23 @@ X0  = [0 22 2 22 4 22 6 22 8 22]';
 
 % Xdot = @(t,X) (A_tilda * X + U_tilda);
 
-[t,X] = ode45(@(t,X) Xdot(t,X,A_tilda,U_tilda),[0 5],X0);
+% [t,X] = ode45(@(t,X) Xdot(t,X,A_tilda,U_tilda),[0 20],X0);
 
+%% Simulation Euler-Cauchy
+tf = 20;
+dt = 0.01;
+
+clear X t
+t=0:dt:20;
+
+X(1,:) = X0';
+
+for n=2:length(t)
+    E(n-1,:) = (R - C*X(n-1,:)')';
+    U(n-1,:) = (K*E(n-1,:)');
+    Xd = A*X(n-1,:)' + B*U(n-1,:)';
+    X(n,:) = X(n-1,:) + dt*Xd';
+end
 %% Plots
 U = -K*C*X'+K*R;
 %U = -K_a*C*X'+K_a*R;
@@ -119,9 +134,8 @@ legend('show')
 
 
 for n=1:N-1
-figure(3); plot(t,X(:,(n+1)*2-1)-X(:,(n)*2-1)-10); hold on;
+figure(3); plot(t,X(:,(n+1)*2-1)-X(:,(n)*2-1)); hold on;
 end
-plot(t,p(:,2:3) - p(:,1:2));
 title('Seperation');
 xlabel('Time (s)');
 ylabel('dP (m)');
@@ -129,9 +143,8 @@ legend('show')
 
 
 for n=1:N-1
-figure(4); plot(t,X(:,(n+1)*2)-X(:,n*2)); hold on
+figure(4); plot(t,X(:,(n+1)*2).*2.23694-X(:,n*2).*2.23694); hold on
 end
-plot(t,s(:,2:3) - s(:,1:2));
 title('Error in Velocities');
 xlabel('Time (s)');
 ylabel('dV (mph)');
@@ -140,8 +153,6 @@ legend('show')
 for n=1:N-1
 figure(5); plot(t,U(n,:)./9.806); hold on
 end
-plot(t,a);
-
 title('Accelerations');
 xlabel('Time (s)');
 ylabel('Accelerations (g)');
