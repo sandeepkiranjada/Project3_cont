@@ -11,7 +11,7 @@ d = 10;
 N = 5; % Platoon size with Leader
 
 R = or(mod((3:N*5-2),5)==1,mod((3:N*5-2),5)==3)' .* d; % Reference Signal
-R(end) = 0;
+R(end) = 22;
 
 W = @(t) t*0; % Acceleration of the leader.
 G = zeros(2*N,1);
@@ -44,7 +44,7 @@ C(end-2:end,end-3:end) = CN;
 K = zeros(N,length(R));
 Ki = [kpi kdi -kpi -kdi 0];
 K1 = [-kpi -kdi 0];
-KN = [kpi kdi 0];
+KN = [kpi kdi kdi];
 
 K(1,1:3) = K1;
 K(end,end-2:end) = KN;
@@ -68,7 +68,7 @@ K_a(4,17) = 1.2;
 % C(7,:) = -0.7*C(7,:);
 % C(15,:) = -0.7*C(15,:);
 
-B(end,end) = 0;
+% B(end,end) = 0;
 
 A_tilda = A-B*K*C;
 %A_tilda = A-B*K_a*C;
@@ -81,7 +81,7 @@ U_tilda = B*K*R;
 
 %% simulation
 
-X0  = [0 22 2 22 4 22 6 22 8 22]';
+X0  = [0 0 10 0 20 0 30 0 40 0]';
 % X0  = zeros(N*2,1);
 % X0(end) = 22.352; % 50 mph in m/s
 
