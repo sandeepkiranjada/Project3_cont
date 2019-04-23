@@ -11,7 +11,7 @@ d = 10;
 N = 5; % Platoon size with Leader
 
 R = or(mod((3:N*5-2),5)==1,mod((3:N*5-2),5)==3)' .* d; % Reference Signal
-R(end) = 22;
+R(end) = 22.352;
 
 W = @(t) t*0; % Acceleration of the leader.
 G = zeros(2*N,1);
@@ -62,7 +62,9 @@ K_a = K;
 % K_a(4,16) = 3;
 %kds
 K_a(4,15) = -1.2;
-K_a(4,17) = 1.2;
+K_a(4,17) = -K_a(4,15);
+K_a(4,14) = 3;
+K_a(4,16) = -K_a(4,14);
 
 % attacker modifying C
 % C(7,:) = -0.7*C(7,:);
@@ -91,7 +93,7 @@ X0  = [0 0 10 0 20 0 30 0 40 0]';
 % [t,X] = ode45(@(t,X) Xdot(t,X,A_tilda,U_tilda),[0 20],X0);
 
 %% Simulation Euler-Cauchy
-tf = 20;
+tf = 50;
 dt = 0.01;
 
 clear X t
@@ -134,6 +136,8 @@ title('Positions');
 xlabel('Time (s)');
 ylabel('Positions (m)');
 legend('show')
+grid on
+
 
 
 for n=1:N
@@ -143,6 +147,8 @@ title('Velocities');
 xlabel('Time (s)');
 ylabel('Velocities (mph)');
 legend('show')
+grid on
+
 
 
 for n=1:N-1
@@ -152,6 +158,8 @@ title('Seperation');
 xlabel('Time (s)');
 ylabel('dP (m)');
 legend('show')
+grid on
+
 
 
 for n=1:N-1
@@ -161,6 +169,8 @@ title('Error in Velocities');
 xlabel('Time (s)');
 ylabel('dV (mph)');
 legend('show')
+grid on
+
 
 for n=1:N-1
 figure(5); plot(t(1:end-1),U(:,n)./9.806); hold on
@@ -169,4 +179,6 @@ title('Accelerations');
 xlabel('Time (s)');
 ylabel('Accelerations (g)');
 legend('show')
+grid on
+
 
