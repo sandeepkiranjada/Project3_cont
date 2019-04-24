@@ -18,11 +18,28 @@ for n=0:N-2
     Xh(n*2+2,1) = Dv(n+1);
 end
 
-syms a b;
+syms a b kp kd l;
 
 Ub = a*Dx+b*Dv;
 
 T2 = inv(triu(-1*ones(N-1)));
 
 Un = inv(T2)*Ub;
+
+for n = 1:N-1
+    B(n*2,n:n+1) = [-1 1];
+    
+end
+
+for n=0:N-1
+    K(n+1,n*2+1:n*2+4) = [-kp -kd kp kd];
+end
+
+K  = K(:,3:end-2);
+A = diag(mod((1:N*2-3),2)==1,1)*1;
+sI = eye(length(A)).*l;
+
+char = sI-A+B*K;
+
+
 
