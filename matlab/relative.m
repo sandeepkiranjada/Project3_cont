@@ -27,6 +27,12 @@ A = diag(mod((1:N*2-3),2)==1,1)*1;
 % R = 50*eye(N);
 % [K,S,E]=lqr(A,B,Q,R);
 
+%% Attacque
+
+K_a = K;
+
+K_a(3,3:6) = [-1 7 1 -7];
+
 %% simulation
 
 % X0  = zeros(1,N*2);
@@ -48,8 +54,8 @@ X(1,:) = X0';
 for n=2:length(t)
 %     E(n-1,:) = (R - C*X(n-1,:)')';
     
-    U(n-1,:) = (K*X(n-1,:)');
-%     U(n-1,:) = (K_a*E(n-1,:)');
+%     U(n-1,:) = (K*X(n-1,:)');
+    U(n-1,:) = (K_a*X(n-1,:)');
 
     U(maxA<U)=maxA;
     U(minA>U)=minA;   
@@ -60,7 +66,7 @@ end
 
 %% Plots
 for n=1:N-1
-figure(1); plot(t,X(:,(n)*2-1)); hold on;
+figure(1); plot(t,X(:,(n)*2-1)+d); hold on;
 n
 end
 title('Seperation');
