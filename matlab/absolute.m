@@ -5,7 +5,7 @@ close all; clc; clear;
 %% Functions
 
 kpi = 1;
-kdi = 3.3;
+kdi = 12;
 d = 10;
 
 N = 5; % Platoon size with Leader
@@ -108,8 +108,8 @@ for n=2:length(t)
     E(n-1,:) = (R - C*X(n-1,:)')';
     
     U(n-1,:) = (K*E(n-1,:)');
-    U(n-1,2) = U(n-1,2) - kdi*10*sin(-0*pi/2+0.2*t(n));
-    U(n-1,4) = U(n-1,4) + kdi*10*sin(0.2*t(n));
+    U(n-1,2) = U(n-1,2) - kdi*10*sin(-0*pi/2+0.1*t(n));
+    U(n-1,4) = U(n-1,4) + kdi*10*sin(0.1*t(n));
 %     U(n-1,:) = (K_a*E(n-1,:)');
 
     U(maxA<U)=maxA;
