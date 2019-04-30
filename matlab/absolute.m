@@ -5,7 +5,7 @@ close all; clc; clear;
 %% Functions
 
 kpi = 1;
-kdi = 3;
+kdi = 3.3;
 d = 10;
 
 N = 5; % Platoon size with Leader
@@ -61,10 +61,10 @@ K_a = K;
 % K_a(4,14) = -3;
 % K_a(4,16) = 3;
 %kds
-K_a(4,15) = -1.2;
-K_a(4,17) = -K_a(4,15);
-K_a(4,14) = 3;
-K_a(4,16) = -K_a(4,14);
+K_a(3,10) = -1.5;
+K_a(3,12) = -K_a(3,10);
+% K_a(4,14) = 1.2;
+% K_a(4,16) = -K_a(4,14);
 
 % attacker modifying C
 % C(7,:) = -0.7*C(7,:);
@@ -107,8 +107,10 @@ X(1,:) = X0';
 for n=2:length(t)
     E(n-1,:) = (R - C*X(n-1,:)')';
     
-%     U(n-1,:) = (K*E(n-1,:)');
-    U(n-1,:) = (K_a*E(n-1,:)');
+    U(n-1,:) = (K*E(n-1,:)');
+    U(n-1,2) = U(n-1,2) - kdi*10*sin(-0*pi/2+0.2*t(n));
+    U(n-1,4) = U(n-1,4) + kdi*10*sin(0.2*t(n));
+%     U(n-1,:) = (K_a*E(n-1,:)');
 
     U(maxA<U)=maxA;
     U(minA>U)=minA;   
